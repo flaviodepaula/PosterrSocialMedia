@@ -31,10 +31,10 @@ public class PostClassTests
         const EnumTypeOfPost postType = EnumTypeOfPost.Original;
         Posts referencedPost = null;
 
-        var message = new Posts(content, authorId, postType, referencedPost);
+        var newPost = new Posts(content, authorId, postType, referencedPost);
         
-        var isOk = message.Validate();
-        var errorMsg = message.GetErrorList()?.Aggregate("", (current, error) => current + ("\n" + error));
+        var isOk = newPost.Validate();
+        var errorMsg = newPost.GetErrorList()?.Aggregate("", (current, error) => current + ("\n" + error));
         
         Assert.That(isOk, errorMsg);
     }
@@ -47,10 +47,9 @@ public class PostClassTests
         const EnumTypeOfPost postType = EnumTypeOfPost.Repost;
         var referencedPost = new Posts("original post", Guid.NewGuid(), EnumTypeOfPost.Original, null );
 
-        var message = new Posts(content, authorId, postType, referencedPost);
-        
-        var isOk = message.Validate();
-        var errorMsg = message.GetErrorList()?.Aggregate("", (current, error) => current + ("\n" + error));
+        var newPost = new Posts(content, authorId, postType, referencedPost);
+        var isOk = newPost.Validate();
+        var errorMsg = newPost.GetErrorList()?.Aggregate("", (current, error) => current + ("\n" + error));
         
         Assert.That(isOk, errorMsg);
     }
@@ -63,9 +62,9 @@ public class PostClassTests
         const EnumTypeOfPost postType = EnumTypeOfPost.Quode;
         var referencedPost = new Posts("original post", Guid.NewGuid(), EnumTypeOfPost.Original, null );
 
-        var message = new Posts(content, authorId, postType, referencedPost);
-        var isOk = message.Validate();
-        var errorMsg = message.GetErrorList()?.Aggregate("", (current, error) => current + ("\n" + error));
+        var newPost = new Posts(content, authorId, postType, referencedPost);
+        var isOk = newPost.Validate();
+        var errorMsg = newPost.GetErrorList()?.Aggregate("", (current, error) => current + ("\n" + error));
         
         Assert.That(isOk, errorMsg);
     }
@@ -78,9 +77,9 @@ public class PostClassTests
         const EnumTypeOfPost postType = EnumTypeOfPost.Repost;
         var referencedPost = new Posts("original post", Guid.NewGuid(), EnumTypeOfPost.Original, null );
 
-        var message = new Posts(content, authorId, postType, referencedPost);
-        var isOk = message.Validate();
-        var errorMsg = message.GetErrorList()?.Aggregate("", (current, error) => current + ("\n" + error));
+        var newPost = new Posts(content, authorId, postType, referencedPost);
+        var isOk = newPost.Validate();
+        var errorMsg = newPost.GetErrorList()?.Aggregate("", (current, error) => current + ("\n" + error));
         
         Assert.That(!isOk, errorMsg);
     }
@@ -94,9 +93,9 @@ public class PostClassTests
         const EnumTypeOfPost postType = EnumTypeOfPost.Quode;
         var referencedPost = new Posts("original post", Guid.NewGuid(), EnumTypeOfPost.Original, null );
 
-        var message = new Posts(content, authorId, postType, referencedPost);
-        var isOk = message.Validate();
-        var errorMsg = message.GetErrorList()?.Aggregate("", (current, error) => current + ("\n" + error));
+        var newPost = new Posts(content, authorId, postType, referencedPost);
+        var isOk = newPost.Validate();
+        var errorMsg = newPost.GetErrorList()?.Aggregate("", (current, error) => current + ("\n" + error));
         
         Assert.That(!isOk, errorMsg);
     }
@@ -113,9 +112,9 @@ public class PostClassTests
         const EnumTypeOfPost postType = EnumTypeOfPost.Quode;
         var referencedPost = new Posts("quode post", Guid.NewGuid(), EnumTypeOfPost.Quode, null );
 
-        var message = new Posts(content, authorId, postType, referencedPost);
-        var isOk = message.Validate();
-        var errorMsg = message.GetErrorList()?.Aggregate("", (current, error) => current + ("\n" + error));
+        var newPost = new Posts(content, authorId, postType, referencedPost);
+        var isOk = newPost.Validate();
+        var errorMsg = newPost.GetErrorList()?.Aggregate("", (current, error) => current + ("\n" + error));
         
         Assert.That(!isOk, errorMsg);
     }
@@ -129,9 +128,9 @@ public class PostClassTests
         const EnumTypeOfPost postType = EnumTypeOfPost.Quode;
         var referencedPost = new Posts("quode post", Guid.NewGuid(), EnumTypeOfPost.Quode, null );
 
-        var message = new Posts(content, authorId, postType, referencedPost);
-        var isOk = message.Validate();
-        var errorMsg = message.GetErrorList()?.Aggregate("", (current, error) => current + ("\n" + error));
+        var newPost = new Posts(content, authorId, postType, referencedPost);
+        var isOk = newPost.Validate();
+        var errorMsg = newPost.GetErrorList()?.Aggregate("", (current, error) => current + ("\n" + error));
         
         Assert.That(!isOk, errorMsg);
     }
@@ -146,9 +145,9 @@ public class PostClassTests
         const EnumTypeOfPost postType = EnumTypeOfPost.Repost;
         Posts referencedPost = null;
 
-        var message = new Posts(content, authorId, postType, referencedPost);
-        var isOk = message.Validate();
-        var errorMsg = message.GetErrorList()?.Aggregate("", (current, error) => current + ("\n" + error));
+        var newPost = new Posts(content, authorId, postType, referencedPost);
+        var isOk = newPost.Validate();
+        var errorMsg = newPost.GetErrorList()?.Aggregate("", (current, error) => current + ("\n" + error));
         
         Assert.That(!isOk, errorMsg);
     }
@@ -162,9 +161,9 @@ public class PostClassTests
         const EnumTypeOfPost postType = EnumTypeOfPost.Quode;
         Posts referencedPost = null;
 
-        var message = new Posts(content, authorId, postType, referencedPost);
-        var isOk = message.Validate();
-        var errorMsg = message.GetErrorList()?.Aggregate("", (current, error) => current + ("\n" + error));
+        var newPost = new Posts(content, authorId, postType, referencedPost);
+        var isOk = newPost.Validate();
+        var errorMsg = newPost.GetErrorList()?.Aggregate("", (current, error) => current + ("\n" + error));
         
         Assert.That(!isOk, errorMsg);
     }
@@ -177,9 +176,9 @@ public class PostClassTests
         const EnumTypeOfPost postType = EnumTypeOfPost.Original;
         Posts referencedPost = null;
 
-        var message = new Posts(content, authorId, postType, referencedPost);
-        var isOk = message.Validate();
-        var errorMsg = message.GetErrorList()?.Aggregate("", (current, error) => current + ("\n" + error));
+        var newPost = new Posts(content, authorId, postType, referencedPost);
+        var isOk = newPost.Validate();
+        var errorMsg = newPost.GetErrorList()?.Aggregate("", (current, error) => current + ("\n" + error));
         
         Assert.That(!isOk, errorMsg);
     }
@@ -196,9 +195,9 @@ public class PostClassTests
         const EnumTypeOfPost postType = EnumTypeOfPost.Original;
         Posts referencedPost = null;
 
-        var message = new Posts(content, authorId, postType, referencedPost);
-        var isOk = message.Validate();
-        var errorMsg = message.GetErrorList()?.Aggregate("", (current, error) => current + ("\n" + error));
+        var newPost = new Posts(content, authorId, postType, referencedPost);
+        var isOk = newPost.Validate();
+        var errorMsg = newPost.GetErrorList()?.Aggregate("", (current, error) => current + ("\n" + error));
         
         Assert.That(!isOk, errorMsg);
     }
