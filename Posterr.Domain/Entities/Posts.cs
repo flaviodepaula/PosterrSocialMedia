@@ -15,11 +15,12 @@ namespace Posterr.Domain.Entities
 
         #region properties
         public Guid GetId() { return _id; }
-        public string Content { get => _content; }
-        public DateTime CreatedDate { get => _createdDate; }
-        public Guid AuthorId { get => _authorId; }
-        public EnumTypeOfPost TypeOfPost { get => _enumTypeOfPost; }
-        public Posts? ReferencedPost { get => _referencedPost; }
+        public string Content => _content;
+        public DateTime CreatedDate => _createdDate; 
+        public Guid AuthorId => _authorId;
+        public EnumTypeOfPost TypeOfPost => _enumTypeOfPost; 
+        public Posts? ReferencedPost => _referencedPost;
+
         #endregion
 
 
@@ -35,13 +36,11 @@ namespace Posterr.Domain.Entities
             _referencedPost = referencedPost;
 
             var isValid = IsValid();
-            if (!isValid.IsValid)
-            {
-                var errors = isValid.Errors.Select(x => x.ErrorMessage);
-                Exception exception = new($"Error on creating a Post class: {string.Join(", \n", errors)}");
-                throw exception;
-
-            }
+            if (isValid.IsValid) return;
+            
+            var errors = isValid.Errors.Select(x => x.ErrorMessage);
+            Exception exception = new($"Error on creating a Post class: {string.Join(", \n", errors)}");
+            throw exception;
         }
 
         private ValidationResult IsValid()
