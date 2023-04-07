@@ -13,6 +13,8 @@ namespace Posterr.Domain.Entities
         private readonly EnumTypeOfPost _enumTypeOfPost;
         private readonly Posts? _referencedPost;
 
+        private IEnumerable<string>? _errorList;
+
         #region properties
         public Guid GetId() { return _id; }
         public string Content => _content;
@@ -22,7 +24,6 @@ namespace Posterr.Domain.Entities
         public Posts? ReferencedPost => _referencedPost;
 
         #endregion
-
 
         public Posts(string content, Guid authorId, EnumTypeOfPost enumTypeOfPost, Posts? referencedPost = null)
         {
@@ -34,18 +35,27 @@ namespace Posterr.Domain.Entities
             _enumTypeOfPost = enumTypeOfPost;
             _referencedPost = referencedPost;
             _referencedPost = referencedPost;
-
-            var isValid = IsValid();
-            if (isValid.IsValid) return;
-            
-            var errors = isValid.Errors.Select(x => x.ErrorMessage);
-            Exception exception = new($"Error on creating a Post class: {string.Join(", \n", errors)}");
-            throw exception;
         }
 
         private ValidationResult IsValid()
         {
             return new CreatePostValidation().Validate(this);
+        }
+
+        public IEnumerable<string>? GetErrorList()
+        {
+            return _errorList;
+        }
+
+        public bool Validate()
+        {
+            var isValid = this.IsValid();
+            if (isValid.IsValid) return true;
+
+            _errorList = new List<string>();
+            _errorList = isValid.Errors.Select(x => x.ErrorMessage);
+
+            return false;
         }
     }
 }

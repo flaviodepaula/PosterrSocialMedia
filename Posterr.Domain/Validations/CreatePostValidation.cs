@@ -8,29 +8,22 @@ namespace Posterr.Domain.Validations
     {
         public CreatePostValidation()
         {
-            RuleFor(cf => cf.AuthorId).NotEmpty().WithMessage("The userId field is required");
+            RuleFor(cf => cf.AuthorId).NotEmpty().WithMessage("The Author of post (userId) is required");
             RuleFor(cf => cf.Content).MaximumLength(777).WithMessage("The field Content must be a string with a maximum length of 777");            
 
             //Validating content for all type of posts
-            RuleFor(cf => cf.TypeOfPost).Equal(EnumTypeOfPost.Original).When(cf => string.IsNullOrEmpty(cf.Content))
-                .WithMessage("User must provide a content for Original posts");
-            RuleFor(cf => cf.TypeOfPost).Equal(EnumTypeOfPost.Quode).When(cf => string.IsNullOrEmpty(cf.Content))
-                .WithMessage("User must provide a content for Quode posts");
-            RuleFor(cf => cf.TypeOfPost).Equal(EnumTypeOfPost.Repost).When(cf => string.IsNullOrEmpty(cf.Content))
-                .WithMessage("User can't provide a content for Repost posts");
+            RuleFor(cf => cf.Content).NotEmpty().When(type=> type.TypeOfPost == EnumTypeOfPost.Original).WithMessage("User must provide a content for Original posts");
+            RuleFor(cf => cf.Content).NotEmpty().When(type=> type.TypeOfPost == EnumTypeOfPost.Quode).WithMessage("User must provide a content for Quode posts");
+            RuleFor(cf => cf.Content).Empty().When(type=> type.TypeOfPost == EnumTypeOfPost.Repost).WithMessage("User can't provide a content for Repost posts");
             
-            //Validating referencedPost for Repost type of posts
-            RuleFor(cf => cf.TypeOfPost).Equal(EnumTypeOfPost.Repost).When(cf => cf.ReferencedPost == null)
-                .WithMessage("User must provide a original Post for Repost posts");
             
-            RuleFor(cf=> cf.TypeOfPost).Equal(EnumTypeOfPost.Repost)
-                .When(cf => cf.ReferencedPost?.TypeOfPost == EnumTypeOfPost.Repost).WithMessage("User can't Repost a post that is a Repost");
-
-            //Validating referencedPost for Quode type of posts
-            RuleFor(cf=> cf.TypeOfPost).Equal(EnumTypeOfPost.Quode).When(cf => cf.ReferencedPost == null)
-                .WithMessage("User must provide a original Post for Quode posts");
-            RuleFor(cf => cf.TypeOfPost).Equal(EnumTypeOfPost.Quode).When(cf => cf.ReferencedPost?.TypeOfPost == EnumTypeOfPost.Quode)
-                .WithMessage("User can't Repost a post and leave a comment along it if this post is a Quode Post");
+            //Validating referencedPost for Repost and Quode type posts
+            RuleFor(cf => cf.ReferencedPost).NotNull().When(type => type.TypeOfPost == EnumTypeOfPost.Repost).WithMessage("User must provide a referenced post for Repost Post");
+            RuleFor(cf=> cf.ReferencedPost).NotNull().When(type => type.TypeOfPost == EnumTypeOfPost.Quode).WithMessage("User must provide a referenced post for Quode Post");
+            
+            
+            //Users mustn't repost post's of same type
+            RuleFor(cf => cf.ReferencedPost!.TypeOfPost.ToString()).NotEqual(cf => cf.TypeOfPost.ToString()).When(cf=> cf.ReferencedPost != null).WithMessage("User mustn't repost posts of same type");
         }
     }
 }
