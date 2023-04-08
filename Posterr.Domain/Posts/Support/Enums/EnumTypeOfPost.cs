@@ -1,4 +1,4 @@
-﻿namespace Posterr.Domain.Support.Enums
+﻿namespace Posterr.Domain.Posts.Support.Enums
 {
     public enum EnumTypeOfPost
     {

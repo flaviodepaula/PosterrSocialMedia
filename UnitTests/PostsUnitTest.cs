@@ -1,7 +1,7 @@
 using System.Text;
 using NuGet.Frameworks;
-using Posterr.Domain.Entities;
-using Posterr.Domain.Support.Enums;
+using Posterr.Domain.Posts.Entities;
+using Posterr.Domain.Posts.Support.Enums;
 
 namespace UnitTests;
 
@@ -32,11 +32,11 @@ public class PostClassTests
         Posts referencedPost = null;
 
         var newPost = new Posts(content, authorId, postType, referencedPost);
+
+        var isOk = newPost.IsValid();
+        var errorMsg = isOk.Errors.Aggregate("", (current, error) => current + ("\n" + error));
         
-        var isOk = newPost.Validate();
-        var errorMsg = newPost.GetErrorList()?.Aggregate("", (current, error) => current + ("\n" + error));
-        
-        Assert.That(isOk, errorMsg);
+        Assert.That(isOk.IsValid, errorMsg);
     }
     
     [Test]
@@ -48,10 +48,10 @@ public class PostClassTests
         var referencedPost = new Posts("original post", Guid.NewGuid(), EnumTypeOfPost.Original, null );
 
         var newPost = new Posts(content, authorId, postType, referencedPost);
-        var isOk = newPost.Validate();
-        var errorMsg = newPost.GetErrorList()?.Aggregate("", (current, error) => current + ("\n" + error));
+        var isOk = newPost.IsValid();
+        var errorMsg = isOk.Errors.Aggregate("", (current, error) => current + ("\n" + error));
         
-        Assert.That(isOk, errorMsg);
+        Assert.That(isOk.IsValid, errorMsg);
     }
     
     [Test]
@@ -63,10 +63,10 @@ public class PostClassTests
         var referencedPost = new Posts("original post", Guid.NewGuid(), EnumTypeOfPost.Original, null );
 
         var newPost = new Posts(content, authorId, postType, referencedPost);
-        var isOk = newPost.Validate();
-        var errorMsg = newPost.GetErrorList()?.Aggregate("", (current, error) => current + ("\n" + error));
+        var isOk = newPost.IsValid();
+        var errorMsg = isOk.Errors.Aggregate("", (current, error) => current + ("\n" + error));
         
-        Assert.That(isOk, errorMsg);
+        Assert.That(isOk.IsValid, errorMsg);
     }
     
     [Test]
@@ -78,10 +78,10 @@ public class PostClassTests
         var referencedPost = new Posts("original post", Guid.NewGuid(), EnumTypeOfPost.Original, null );
 
         var newPost = new Posts(content, authorId, postType, referencedPost);
-        var isOk = newPost.Validate();
-        var errorMsg = newPost.GetErrorList()?.Aggregate("", (current, error) => current + ("\n" + error));
+        var isOk = newPost.IsValid();
+        var errorMsg = isOk.Errors.Aggregate("", (current, error) => current + ("\n" + error));
         
-        Assert.That(!isOk, errorMsg);
+        Assert.That(!isOk.IsValid, errorMsg);
     }
     
     [Test]
@@ -94,10 +94,10 @@ public class PostClassTests
         var referencedPost = new Posts("original post", Guid.NewGuid(), EnumTypeOfPost.Original, null );
 
         var newPost = new Posts(content, authorId, postType, referencedPost);
-        var isOk = newPost.Validate();
-        var errorMsg = newPost.GetErrorList()?.Aggregate("", (current, error) => current + ("\n" + error));
+        var isOk = newPost.IsValid();
+        var errorMsg = isOk.Errors.Aggregate("", (current, error) => current + ("\n" + error));
         
-        Assert.That(!isOk, errorMsg);
+        Assert.That(!isOk.IsValid, errorMsg);
     }
     
     [Test]
@@ -113,10 +113,10 @@ public class PostClassTests
         var referencedPost = new Posts("quode post", Guid.NewGuid(), EnumTypeOfPost.Quode, null );
 
         var newPost = new Posts(content, authorId, postType, referencedPost);
-        var isOk = newPost.Validate();
-        var errorMsg = newPost.GetErrorList()?.Aggregate("", (current, error) => current + ("\n" + error));
+        var isOk = newPost.IsValid();
+        var errorMsg = isOk.Errors.Aggregate("", (current, error) => current + ("\n" + error));
         
-        Assert.That(!isOk, errorMsg);
+        Assert.That(!isOk.IsValid, errorMsg);
     }
     
     [Test]
@@ -129,10 +129,10 @@ public class PostClassTests
         var referencedPost = new Posts("quode post", Guid.NewGuid(), EnumTypeOfPost.Quode, null );
 
         var newPost = new Posts(content, authorId, postType, referencedPost);
-        var isOk = newPost.Validate();
-        var errorMsg = newPost.GetErrorList()?.Aggregate("", (current, error) => current + ("\n" + error));
+        var isOk = newPost.IsValid();
+        var errorMsg = isOk.Errors.Aggregate("", (current, error) => current + ("\n" + error));
         
-        Assert.That(!isOk, errorMsg);
+        Assert.That(!isOk.IsValid, errorMsg);
     }
     
     
@@ -146,10 +146,10 @@ public class PostClassTests
         Posts referencedPost = null;
 
         var newPost = new Posts(content, authorId, postType, referencedPost);
-        var isOk = newPost.Validate();
-        var errorMsg = newPost.GetErrorList()?.Aggregate("", (current, error) => current + ("\n" + error));
+        var isOk = newPost.IsValid();
+        var errorMsg = isOk.Errors.Aggregate("", (current, error) => current + ("\n" + error));
         
-        Assert.That(!isOk, errorMsg);
+        Assert.That(!isOk.IsValid, errorMsg);
     }
     
     [Test]
@@ -162,10 +162,10 @@ public class PostClassTests
         Posts referencedPost = null;
 
         var newPost = new Posts(content, authorId, postType, referencedPost);
-        var isOk = newPost.Validate();
-        var errorMsg = newPost.GetErrorList()?.Aggregate("", (current, error) => current + ("\n" + error));
+        var isOk = newPost.IsValid();
+        var errorMsg = isOk.Errors.Aggregate("", (current, error) => current + ("\n" + error));
         
-        Assert.That(!isOk, errorMsg);
+        Assert.That(!isOk.IsValid, errorMsg);
     }
     
     [Test]
@@ -177,10 +177,10 @@ public class PostClassTests
         Posts referencedPost = null;
 
         var newPost = new Posts(content, authorId, postType, referencedPost);
-        var isOk = newPost.Validate();
-        var errorMsg = newPost.GetErrorList()?.Aggregate("", (current, error) => current + ("\n" + error));
+        var isOk = newPost.IsValid();
+        var errorMsg = isOk.Errors.Aggregate("", (current, error) => current + ("\n" + error));
         
-        Assert.That(!isOk, errorMsg);
+        Assert.That(!isOk.IsValid, errorMsg);
     }
     
     
@@ -196,10 +196,10 @@ public class PostClassTests
         Posts referencedPost = null;
 
         var newPost = new Posts(content, authorId, postType, referencedPost);
-        var isOk = newPost.Validate();
-        var errorMsg = newPost.GetErrorList()?.Aggregate("", (current, error) => current + ("\n" + error));
+        var isOk = newPost.IsValid();
+        var errorMsg = isOk.Errors.Aggregate("", (current, error) => current + ("\n" + error));
         
-        Assert.That(!isOk, errorMsg);
+        Assert.That(!isOk.IsValid, errorMsg);
     }
     
 }

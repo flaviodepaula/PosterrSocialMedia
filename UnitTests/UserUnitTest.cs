@@ -1,4 +1,4 @@
-using Posterr.Domain.Entities;
+using Posterr.Domain.User.Entities;
 
 namespace UnitTests;
 

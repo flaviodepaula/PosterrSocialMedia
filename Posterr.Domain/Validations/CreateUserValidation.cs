@@ -1,9 +1,8 @@
 using FluentValidation;
-using Posterr.Domain.Entities;
 
 namespace Posterr.Domain.Validations;
 
-public class CreateUserValidation : CommandValidation<User>
+public class CreateUserValidation : CommandValidation<User.Entities.User>
 {
     public CreateUserValidation()
     {

@@ -1,8 +1,8 @@
 ﻿using FluentValidation.Results;
-using Posterr.Domain.Support.Enums;
+using Posterr.Domain.Posts.Support.Enums;
 using Posterr.Domain.Validations;
 
-namespace Posterr.Domain.Entities
+namespace Posterr.Domain.Posts.Entities
 {
     public class Posts
     {
@@ -12,9 +12,7 @@ namespace Posterr.Domain.Entities
         private readonly Guid _authorId;
         private readonly EnumTypeOfPost _enumTypeOfPost;
         private readonly Posts? _referencedPost;
-
-        private IEnumerable<string>? _errorList;
-
+        
         #region properties
         public Guid GetId() { return _id; }
         public string Content => _content;
@@ -37,25 +35,9 @@ namespace Posterr.Domain.Entities
             _referencedPost = referencedPost;
         }
 
-        private ValidationResult IsValid()
+        public ValidationResult IsValid()
         {
             return new CreatePostValidation().Validate(this);
-        }
-
-        public IEnumerable<string>? GetErrorList()
-        {
-            return _errorList;
-        }
-
-        public bool Validate()
-        {
-            var isValid = this.IsValid();
-            if (isValid.IsValid) return true;
-
-            _errorList = new List<string>();
-            _errorList = isValid.Errors.Select(x => x.ErrorMessage);
-
-            return false;
         }
     }
 }

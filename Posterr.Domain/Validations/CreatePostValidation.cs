@@ -1,10 +1,9 @@
 ﻿using FluentValidation;
-using Posterr.Domain.Entities;
-using Posterr.Domain.Support.Enums;
+using Posterr.Domain.Posts.Support.Enums;
 
 namespace Posterr.Domain.Validations
 {
-    public class CreatePostValidation : CommandValidation<Posts>
+    public class CreatePostValidation : CommandValidation<Posts.Entities.Posts>
     {
         public CreatePostValidation()
         {

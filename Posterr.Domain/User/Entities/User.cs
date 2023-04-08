@@ -1,7 +1,7 @@
 using FluentValidation.Results;
 using Posterr.Domain.Validations;
 
-namespace Posterr.Domain.Entities;
+namespace Posterr.Domain.User.Entities;
 
 public class User
 {
