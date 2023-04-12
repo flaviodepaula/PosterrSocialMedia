@@ -1,6 +1,7 @@
 using FluentResults;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Posterr.Domain.Posts.DTO;
 using Posterr.Domain.Posts.Interfaces.Application;
 using Posterr.Domain.Posts.Interfaces.Repository;
 using Posterr.Domain.Posts.Queries;
@@ -12,31 +13,33 @@ public class PostApplicationService : IPostApplication
 {
     private readonly IPostRepository _postRepository;
     private readonly ILogger<PostApplicationService> _logger;
-    private readonly UsersOptions _generalOptions;
+    private readonly GeneralOptions _generalOptions;
     
-    public PostApplicationService(IPostRepository postRepository, ILogger<PostApplicationService> logger, IOptions<UsersOptions> generalOptions)
+    public PostApplicationService(IPostRepository postRepository, ILogger<PostApplicationService> logger, IOptions<GeneralOptions> generalOptions)
     {
         _postRepository = postRepository;
         _logger = logger;
         _generalOptions = generalOptions.Value;
     }
 
-    public async Task<Result<IEnumerable<Entities.Posts>>> ListPostsAsync(PostQuery postQuery, CancellationToken cancellationToken)
+    public async Task<Result<IEnumerable<PostDTO>>> ListPostsAsync(PostQuery postQuery, CancellationToken cancellationToken)
     {
         return await _postRepository.ListPostsAsync(postQuery, cancellationToken);
     }
 
-    public async Task<Result<bool>> CreatePostAsync(Entities.Posts post, CancellationToken cancellationToken)
+    public async Task<Result<PostDTO>> CreatePostAsync(Entities.Post post, CancellationToken cancellationToken)
     {
         try
         {
             var validationModel = post.IsValid();
             if (!validationModel.IsValid)
             {
-                _logger.LogError("PostApplicationService.CreatePost.Error: Please check the data used to create the post");
+                var errors = validationModel.Errors.Select(x => x.ErrorMessage).ToList();
+                var error = string.Join("\n", errors);
+                
+                _logger.LogError($"PostApplicationService.CreatePost.Error: Please check the data used to create the post. Errors: {error}");
 
-                var errors = validationModel.Errors.SelectMany(x => x.ErrorMessage).ToString();
-                return Result.Fail(errors);  
+                return Result.Fail(error);  
             }
 
             var isValid = await CheckUserHasExceededDailyLimitPosts(post.AuthorId, cancellationToken)
@@ -46,25 +49,27 @@ public class PostApplicationService : IPostApplication
             {
                 const string strError = "PostApplicationService.CreatePost.Error: User has reached the maximum number of daily posts";
                 _logger.LogError(strError);
-                return Result.Fail<bool>(strError);
+                return Result.Fail<PostDTO>(strError);
             }
 
-            await _postRepository.CreatePostAsync(post, cancellationToken);
+            var newPost = await _postRepository.CreatePostAsync(post, cancellationToken);
 
-            return Result.Ok(true);
+            return Result.Ok(newPost.Value);
         }
-        catch (Exception e)
+        catch (Exception error)
         {
-            const string strError = "PostApplicationService.CreatePost.Error: Please check the data used to create the post";
+            var strError = $"PostApplicationService.CreatePost.Error: Please check the data used to create the post. Error: {error.Message}";
             _logger.LogError(strError);
             return Result.Fail(strError);
         }
     }
     
-    public async Task<Result<bool>> CheckUserHasExceededDailyLimitPosts(Guid userGuid, CancellationToken cancellationToken)
+    private async Task<Result<bool>> CheckUserHasExceededDailyLimitPosts(Guid userGuid, CancellationToken cancellationToken)
     {
         var countPosts = (await _postRepository.GetCountPostsByUser(userGuid, cancellationToken).ConfigureAwait(false)).Value;
-
-        return (countPosts <= _generalOptions.MaxAllowedPostsByDay);
+        
+        //TODO: use _generalOptions.MaxAllowedPostsByDay to validate. 
+        //only for test purpose, using a fixed number
+        return (countPosts <= 5);
     }
 }

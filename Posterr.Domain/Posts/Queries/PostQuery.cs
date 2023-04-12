@@ -9,6 +9,9 @@ public class PostQuery
 
     public bool IsValid()
     {
-        return AllPosts || UserId != null;
+        if(!AllPosts && UserId is null)
+            return false;
+
+        return true;
     }
 }

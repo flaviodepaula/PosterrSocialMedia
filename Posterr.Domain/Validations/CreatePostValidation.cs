@@ -3,7 +3,7 @@ using Posterr.Domain.Posts.Support.Enums;
 
 namespace Posterr.Domain.Validations
 {
-    public class CreatePostValidation : CommandValidation<Posts.Entities.Posts>
+    public class CreatePostValidation : CommandValidation<Posts.Entities.Post>
     {
         public CreatePostValidation()
         {

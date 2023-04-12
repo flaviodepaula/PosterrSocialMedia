@@ -1,15 +1,28 @@
 using System.Text;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Moq;
 using NuGet.Frameworks;
 using Posterr.Domain.Posts.Entities;
+using Posterr.Domain.Posts.Queries;
+using Posterr.Domain.Posts.Services;
 using Posterr.Domain.Posts.Support.Enums;
+using Posterr.Domain.Posts.Support.Options;
+using UnitTests.Posts;
 
 namespace UnitTests;
 
 public class PostClassTests
 {
+    
+    private Mock<ILogger<PostApplicationService>> _loggerPostApplication;
+    private Mock<IOptions<GeneralOptions>> _mockOptions;
+    
     [SetUp]
     public void Setup()
     {
+        _loggerPostApplication = new Mock<ILogger<PostApplicationService>>();
+        _mockOptions = new Mock<IOptions<GeneralOptions>>();
     }
 
     [Test]
@@ -18,9 +31,9 @@ public class PostClassTests
         const string content = "value test";
         var authorId = Guid.NewGuid();
         const EnumTypeOfPost postType = EnumTypeOfPost.Original;
-        Posts referencedPost = null;
+        Post referencedPost = null;
 
-        Assert.That(new Posts(content, authorId, postType, referencedPost), Is.InstanceOf(typeof(Posts)));
+        Assert.That(new Post(content, authorId, postType, referencedPost), Is.InstanceOf(typeof(Post)));
     } 
     
     [Test]
@@ -29,9 +42,9 @@ public class PostClassTests
         const string content = "value test";
         var authorId = Guid.NewGuid();
         const EnumTypeOfPost postType = EnumTypeOfPost.Original;
-        Posts referencedPost = null;
+        Post referencedPost = null;
 
-        var newPost = new Posts(content, authorId, postType, referencedPost);
+        var newPost = new Post(content, authorId, postType, referencedPost);
 
         var isOk = newPost.IsValid();
         var errorMsg = isOk.Errors.Aggregate("", (current, error) => current + ("\n" + error));
@@ -45,9 +58,9 @@ public class PostClassTests
         const string content = "";
         var authorId = Guid.NewGuid();
         const EnumTypeOfPost postType = EnumTypeOfPost.Repost;
-        var referencedPost = new Posts("original post", Guid.NewGuid(), EnumTypeOfPost.Original, null );
+        var referencedPost = new Post("original post", Guid.NewGuid(), EnumTypeOfPost.Original, null );
 
-        var newPost = new Posts(content, authorId, postType, referencedPost);
+        var newPost = new Post(content, authorId, postType, referencedPost);
         var isOk = newPost.IsValid();
         var errorMsg = isOk.Errors.Aggregate("", (current, error) => current + ("\n" + error));
         
@@ -60,9 +73,9 @@ public class PostClassTests
         const string content = "testing quode post";
         var authorId = Guid.NewGuid();
         const EnumTypeOfPost postType = EnumTypeOfPost.Quode;
-        var referencedPost = new Posts("original post", Guid.NewGuid(), EnumTypeOfPost.Original, null );
+        var referencedPost = new Post("original post", Guid.NewGuid(), EnumTypeOfPost.Original, null );
 
-        var newPost = new Posts(content, authorId, postType, referencedPost);
+        var newPost = new Post(content, authorId, postType, referencedPost);
         var isOk = newPost.IsValid();
         var errorMsg = isOk.Errors.Aggregate("", (current, error) => current + ("\n" + error));
         
@@ -75,9 +88,9 @@ public class PostClassTests
         const string content = "trying to repost a original post with comment - not allowed";
         var authorId = Guid.NewGuid();
         const EnumTypeOfPost postType = EnumTypeOfPost.Repost;
-        var referencedPost = new Posts("original post", Guid.NewGuid(), EnumTypeOfPost.Original, null );
+        var referencedPost = new Post("original post", Guid.NewGuid(), EnumTypeOfPost.Original, null );
 
-        var newPost = new Posts(content, authorId, postType, referencedPost);
+        var newPost = new Post(content, authorId, postType, referencedPost);
         var isOk = newPost.IsValid();
         var errorMsg = isOk.Errors.Aggregate("", (current, error) => current + ("\n" + error));
         
@@ -91,9 +104,9 @@ public class PostClassTests
         const string content = "";
         var authorId = Guid.NewGuid();
         const EnumTypeOfPost postType = EnumTypeOfPost.Quode;
-        var referencedPost = new Posts("original post", Guid.NewGuid(), EnumTypeOfPost.Original, null );
+        var referencedPost = new Post("original post", Guid.NewGuid(), EnumTypeOfPost.Original, null );
 
-        var newPost = new Posts(content, authorId, postType, referencedPost);
+        var newPost = new Post(content, authorId, postType, referencedPost);
         var isOk = newPost.IsValid();
         var errorMsg = isOk.Errors.Aggregate("", (current, error) => current + ("\n" + error));
         
@@ -110,9 +123,9 @@ public class PostClassTests
         const string content = "trying to quode a quode post";
         var authorId = Guid.NewGuid();
         const EnumTypeOfPost postType = EnumTypeOfPost.Quode;
-        var referencedPost = new Posts("quode post", Guid.NewGuid(), EnumTypeOfPost.Quode, null );
+        var referencedPost = new Post("quode post", Guid.NewGuid(), EnumTypeOfPost.Quode, null );
 
-        var newPost = new Posts(content, authorId, postType, referencedPost);
+        var newPost = new Post(content, authorId, postType, referencedPost);
         var isOk = newPost.IsValid();
         var errorMsg = isOk.Errors.Aggregate("", (current, error) => current + ("\n" + error));
         
@@ -126,9 +139,9 @@ public class PostClassTests
         const string content = "trying to quode a quode post";
         var authorId = Guid.NewGuid();
         const EnumTypeOfPost postType = EnumTypeOfPost.Quode;
-        var referencedPost = new Posts("quode post", Guid.NewGuid(), EnumTypeOfPost.Quode, null );
+        var referencedPost = new Post("quode post", Guid.NewGuid(), EnumTypeOfPost.Quode, null );
 
-        var newPost = new Posts(content, authorId, postType, referencedPost);
+        var newPost = new Post(content, authorId, postType, referencedPost);
         var isOk = newPost.IsValid();
         var errorMsg = isOk.Errors.Aggregate("", (current, error) => current + ("\n" + error));
         
@@ -143,9 +156,9 @@ public class PostClassTests
         const string content = "trying to repost a post without a referenced post";
         var authorId = Guid.NewGuid();
         const EnumTypeOfPost postType = EnumTypeOfPost.Repost;
-        Posts referencedPost = null;
+        Post referencedPost = null;
 
-        var newPost = new Posts(content, authorId, postType, referencedPost);
+        var newPost = new Post(content, authorId, postType, referencedPost);
         var isOk = newPost.IsValid();
         var errorMsg = isOk.Errors.Aggregate("", (current, error) => current + ("\n" + error));
         
@@ -159,9 +172,9 @@ public class PostClassTests
         const string content = "trying to quode a quode post";
         var authorId = Guid.NewGuid();
         const EnumTypeOfPost postType = EnumTypeOfPost.Quode;
-        Posts referencedPost = null;
+        Post referencedPost = null;
 
-        var newPost = new Posts(content, authorId, postType, referencedPost);
+        var newPost = new Post(content, authorId, postType, referencedPost);
         var isOk = newPost.IsValid();
         var errorMsg = isOk.Errors.Aggregate("", (current, error) => current + ("\n" + error));
         
@@ -174,9 +187,9 @@ public class PostClassTests
         const string content = "trying to create a post without a author";
         var authorId = Guid.Empty;
         const EnumTypeOfPost postType = EnumTypeOfPost.Original;
-        Posts referencedPost = null;
+        Post referencedPost = null;
 
-        var newPost = new Posts(content, authorId, postType, referencedPost);
+        var newPost = new Post(content, authorId, postType, referencedPost);
         var isOk = newPost.IsValid();
         var errorMsg = isOk.Errors.Aggregate("", (current, error) => current + ("\n" + error));
         
@@ -193,13 +206,42 @@ public class PostClassTests
         var content = new StringBuilder(text.Length * repetitions).Insert(0, text, repetitions).ToString() ;
         var authorId = Guid.Empty;
         const EnumTypeOfPost postType = EnumTypeOfPost.Original;
-        Posts referencedPost = null;
+        Post referencedPost = null;
 
-        var newPost = new Posts(content, authorId, postType, referencedPost);
+        var newPost = new Post(content, authorId, postType, referencedPost);
         var isOk = newPost.IsValid();
         var errorMsg = isOk.Errors.Aggregate("", (current, error) => current + ("\n" + error));
         
         Assert.That(!isOk.IsValid, errorMsg);
     }
     
+    [Test]
+    public async Task ListPostsAsync()
+    {
+        var query = new PostQuery()
+        {
+            AllPosts = true
+        };
+
+        var postRepositoryMock = Mock_IPostRepository.ListPostsMock(query);
+        var postApplication = new PostApplicationService(postRepositoryMock.Object, _loggerPostApplication.Object, _mockOptions.Object);    
+
+        var result = await postApplication.ListPostsAsync(query, CancellationToken.None);
+
+        Assert.That(result.Value, Is.Not.Empty);
+    }
+    
+    [Test]
+    public async Task CreatePostAsync()
+    {
+        var guidUser = Guid.NewGuid();
+        var newPost = new Post( "1st test object", guidUser, EnumTypeOfPost.Original);
+
+        var repositoryMock = Mock_IPostRepository.CreatePostMock(newPost);
+        var postApplication = new PostApplicationService(repositoryMock.Object, _loggerPostApplication.Object, _mockOptions.Object);
+
+        var result = await postApplication.CreatePostAsync(newPost, CancellationToken.None);
+
+        Assert.That(result.Value.Content, Is.EqualTo(newPost.Content));
+    }
 }
